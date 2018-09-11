@@ -1,0 +1,5 @@
+{
+  "agent_parameters" : {
+    "report_interval_seconds" : 300
+  }
+}
