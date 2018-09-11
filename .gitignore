@@ -1,0 +1,19 @@
+doc/generated/*
+certs/*
+external_libs/aws-iot-device-sdk-embedded-C/*
+/external_libs/.DS_Store
+/.idea/
+/.DS_Store
+/build/
+
+### CMake ###
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+cmake-build-*/
