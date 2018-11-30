@@ -1,13 +1,6 @@
+dist: xenial
 language:
   - c
-
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-    - os: linux
-      dist: precise
-
 compiler:
   - gcc
 addons:
