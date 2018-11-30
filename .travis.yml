@@ -1,0 +1,32 @@
+language:
+  - c
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+    - os: linux
+      dist: precise
+
+compiler:
+  - gcc
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc
+      - cmake
+script:
+  - cd scripts
+  - ./bootstrap.sh
+  - cd ..
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make all
+  - make agent
+  - make test_collector
+  - ./test_collector
+  - make test_metrics
+  - ./test_metrics
