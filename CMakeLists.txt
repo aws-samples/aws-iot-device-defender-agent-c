@@ -24,7 +24,8 @@ set_property(TARGET tinycbor PROPERTY IMPORTED_LOCATION ${SOURCE_DIR}/lib/libtin
 add_dependencies(tinycbor project_tinycbor)
 
 # Agent
-add_executable(agent)
+# add agent.c to executable here for older versions of CMake
+add_executable(agent src/agent.c)
 target_include_directories(agent PRIVATE
         include/
         external_libs/cjson
@@ -33,7 +34,6 @@ target_include_directories(agent PRIVATE
         ${SOURCE_DIR}/src)
 
 target_sources(agent PRIVATE
-        src/agent.c
         src/agent_config.h
         src/collector.c
         src/metrics.c
@@ -51,23 +51,23 @@ add_subdirectory(external_libs/aws-iot-device-sdk-embedded-C)
 
 # Tests
 ## Test Collector
-add_executable(test_collector EXCLUDE_FROM_ALL test/test_main.c)
+add_executable(test_collector EXCLUDE_FROM_ALL test/test_collector.c)
 target_include_directories(test_collector PRIVATE
         external_libs/unity
         external_libs/cjson
+        ${SOURCE_DIR}/src
         src/)
 target_compile_definitions(test_collector PUBLIC COLLECTOR_TEST)
 target_sources(test_collector PRIVATE
         src/collector.c
         src/metrics.c
-        test/test_collector.c
         external_libs/unity/unity.c
         external_libs/cjson/cJSON.c)
 target_link_libraries(test_collector PRIVATE tinycbor)
 add_test(test_collector test_collector)
 
 ## Test Metrics
-add_executable(test_metrics EXCLUDE_FROM_ALL test/test_main.c)
+add_executable(test_metrics EXCLUDE_FROM_ALL test/test_metrics.c)
 target_include_directories(test_metrics PRIVATE
         external_libs/unity
         external_libs/cjson
@@ -77,7 +77,6 @@ target_compile_definitions(test_metrics PUBLIC COLLECTOR_TEST)
 target_sources(test_metrics PRIVATE
         src/collector.c
         src/metrics.c
-        test/test_metrics.c
         external_libs/unity/unity.c
         external_libs/cjson/cJSON.c)
 target_link_libraries(test_metrics PRIVATE
