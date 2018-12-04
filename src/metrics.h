@@ -42,7 +42,7 @@ enum protocol {
 };
 
 /**
- * @Aggregate Network stats
+ * @brief Aggregate Network stats
  */
 typedef struct {
     char *interface; /** Network Interface Name */

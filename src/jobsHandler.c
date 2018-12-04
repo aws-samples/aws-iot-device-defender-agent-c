@@ -17,12 +17,11 @@
 #include "aws_iot_log.h"
 #include "aws_iot_version.h"
 #include "aws_iot_mqtt_client_interface.h"
+
+#ifndef DISABLE_IOT_JOBS
 #include "aws_iot_jobs_interface.h"
-
 #include "agent_config.h"
-
 #include "cJSON.h"
-
 #include <string.h>
 
 IoT_Error_t setupJobsSubscriptions(AWS_IoT_Client *client) {
@@ -241,3 +240,4 @@ void cleanUpJobSubscriptions(AWS_IoT_Client *client) {
     free(topicToSubscribeUpdateRejected);
     free(topicToSubscribeStartNext);
 }
+#endif

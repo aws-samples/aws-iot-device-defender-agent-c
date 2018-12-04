@@ -80,6 +80,14 @@ This agent builds using [CMake](https://cmake.org/), which provides a simple pla
     ```
     ./agent
     ```
+#### Generate API Documentation
+1. Install [Doxygen](http://www.doxygen.nl/manual/install.html)
+1. From the repository's root directory, run Doxygen to generate the api documentation
+   ```
+   doxygen
+   ```
+1. The API documentation will be generated in html format and stored in __/docs/generated__
+1. To view the documentation, open __/docs/generated/html/index.html__ with a browser
 ## IoT Jobs Integration
 You can use [AWS IoT Jobs](https://docs.aws.amazon.com/iot/latest/developerguide/iot-jobs.html) to 
 set the metrics reporting interval of your agent. Below you will find a 
