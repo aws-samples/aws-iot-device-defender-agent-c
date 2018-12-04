@@ -53,7 +53,7 @@ git clone https://github.com/aws-samples/aws-iot-device-defender-agent-c.git
    * __AWS_IOT_CERTIFICATE_FILENAME__ - File name of your device certificate
    * __AWS_IOT_PRIVATE_KEY_FILENAME__ - File name of your certificate private key
 
-Given the certificate files named as illustrated in the previous step, and a thing named __MY_THING__ your aws_iot_config.h would contain a block that looks something like this:
+Given the certificate files named as illustrated in the previous step, and a thing named __MY_THING__ your *aws_iot_config.h* would contain a block that looks something like this:
 ```
 // Get from console
 // =================================================
@@ -101,8 +101,8 @@ This agent builds using [CMake](https://cmake.org/), which provides a simple pla
    ```
    doxygen
    ```
-3. The API documentation will be generated in html format and stored in __/docs/generated__
-4. To view the documentation, open __/docs/generated/html/index.html__ with a browser
+3. The API documentation will be generated in html format and stored in *docs/generated/html*
+4. To view the documentation, open *docs/generated/html/index.html* with a browser
 
 ## IoT Jobs Integration
 
@@ -117,6 +117,10 @@ sample jobs document that sets the reporting interval to 600 seconds.
   }
 }
 ```
+
+To use the above jobs, file you can follow the steps as outlined in [Creating and Managing Jobs](https://docs.aws.amazon.com/iot/latest/developerguide/manage-job-console.html). **When following these steps, you can skip the steps related to code-signing.
+
+
 ### Disabling Jobs at runtime
 
 If you wish to disable IoT Jobs functionality at runtime you can pass the "-j" argument to the agent.
