@@ -5,6 +5,7 @@
 #define AWSIOTDEVICEDEFENDERAGENT_AGENT_CONFIG_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define HOST_ADDRESS_SIZE 255
 #define MAX_TOPIC_LENGTH 256
@@ -28,6 +29,6 @@ extern int PUBLISH_INTERVAL;
 
 extern enum format REPORT_FORMAT;
 extern enum tagType TAG_LENGTH;
-
+extern bool DISABLE_JOBS;
 
 #endif //AWSIOTDEVICEDEFENDERAGENT_AGENT_CONFIG_H

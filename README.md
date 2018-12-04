@@ -92,3 +92,11 @@ sample jobs document that sets the reporting interval to 600 seconds.
   }
 }
 ```
+### Disabling Jobs at runtime
+If you wish to disable IoT Jobs functionality at runtime you can pass the "-j" argument to the agent.
+By passing this argument, the agent will not setup the necessary jobs MQTT subscriptions or check for new 
+jobs. By default, jobs integration is enabled.
+
+```
+agent -j
+```

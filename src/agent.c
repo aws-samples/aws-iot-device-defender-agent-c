@@ -33,7 +33,7 @@
 int PUBLISH_INTERVAL = 301;
 enum format REPORT_FORMAT = JSON;
 enum tagType TAG_LENGTH = LONG_NAMES;
-
+bool DISABLE_JOBS = false;
 
 void subscriptionCallbackHandler(AWS_IoT_Client *pClient, char *topicName, uint16_t topicNameLen,
                                  IoT_Publish_Message_Params *params, void *pData) {
@@ -69,7 +69,7 @@ void disconnectCallbackHandler(AWS_IoT_Client *pClient, void *data) {
 void parseInputArgs(int argc, char **argv) {
     int opt;
 
-    while (-1 != (opt = getopt(argc, argv, "h:p:c:x:f:s"))) {
+    while (-1 != (opt = getopt(argc, argv, "h:p:c:x:f:sj"))) {
         switch (opt) {
             case 'h':
                 strncpy(HostAddress, optarg, HOST_ADDRESS_SIZE);
@@ -94,6 +94,11 @@ void parseInputArgs(int argc, char **argv) {
                 break;
             case 's':
                 TAG_LENGTH = SHORT_NAMES;
+                break;
+            case 'j' :
+                IOT_DEBUG("Disable IoT Jobs Functions")
+                DISABLE_JOBS = true;
+                break;
             case '?':
                 if (optopt == 'c') {
                     IOT_ERROR("Option -%c requires an argument.", optopt);
@@ -216,8 +221,9 @@ int main(int argc, char *argv[]) {
         return rc;
     }
 
-    setupJobsSubscriptions(&client);
-
+    if(!DISABLE_JOBS) {
+        setupJobsSubscriptions(&client);
+    }
     paramsQOS0.qos = QOS0;
     paramsQOS0.payload = (void *) cPayload;
     paramsQOS0.isRetained = 0;
@@ -231,7 +237,9 @@ int main(int argc, char *argv[]) {
     while ((NETWORK_ATTEMPTING_RECONNECT == rc || NETWORK_RECONNECTED == rc || SUCCESS == rc)
            && (publishCount > 0 || infinitePublishFlag)) {
 
-        checkForNewJobs(&client);
+        if(!DISABLE_JOBS) {
+            checkForNewJobs(&client);
+        }
         //Max time the yield function will wait for read messages
         rc = aws_iot_mqtt_yield(&client, 1000);
         if (NETWORK_ATTEMPTING_RECONNECT == rc) {
@@ -262,6 +270,9 @@ int main(int argc, char *argv[]) {
         IOT_INFO("Publish done\n");
     }
 
-    cleanUpJobSubscriptions(&client);
+    if(!DISABLE_JOBS) {
+        cleanUpJobSubscriptions(&client);
+    }
+
     return 0;
 }
