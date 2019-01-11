@@ -104,7 +104,7 @@ void test_JSONMetricsBasicStructure_ShortTags() {
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
-    cJSON *header = cJSON_GetObjectItemCaseSensitive(report,"h");
+    cJSON *header = cJSON_GetObjectItemCaseSensitive(report,"hed");
 
     TEST_ASSERT_TRUE(cJSON_IsObject(header));
     cJSON *id = cJSON_GetObjectItem(header,"rid");
