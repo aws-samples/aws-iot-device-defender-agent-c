@@ -264,9 +264,9 @@ int readFile(const char *path, char *buffer[], const int bufferSize) {
 
 void hexAddrToIpStr(const char *hexAddr, char ipStr[], const int ipStrLength) {
 
-    int addrNum = (int) strtol(hexAddr, NULL, 16);
+    uint32_t addrNum = (uint32_t) strtoul(hexAddr, NULL, 16);
     struct in_addr addr;
-    addr.s_addr = htonl(addrNum); // s_addr must be in network byte order
+    addr.s_addr = addrNum; // hexAddr is in network byte order already
     char *s = inet_ntoa(addr);
 
     snprintf(ipStr, ipStrLength, "%s", s);
