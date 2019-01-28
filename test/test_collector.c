@@ -137,8 +137,8 @@ void test_connectionsDedup(void) {
     }
 
     fileContents[0] = strcpy(fileContents[0],"sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     \n\0");
-    fileContents[1] = strcpy(fileContents[1],"    1: 00000000:170C     11111111:0000 0A 00000000:00000000 00:00000000 00000000 1420238916        0 46115 1 0000000000000000 100 0 0 10 0                 \n\0");
-    fileContents[2] = strcpy(fileContents[2],"    2: 00000000:170C     11111111:0000 0A 00000000:00000000 00:00000000 00000000 1420238916        0 46115 1 0000000000000000 100 0 0 10 0                 \n\0");
+    fileContents[1] = strcpy(fileContents[1],"    1: 00000000:170C     0100007F:0000 0A 00000000:00000000 00:00000000 00000000 1420238916        0 46115 1 0000000000000000 100 0 0 10 0                 \n\0");
+    fileContents[2] = strcpy(fileContents[2],"    2: 00000000:170C     0100007F:0000 0A 00000000:00000000 00:00000000 00000000 1420238916        0 46115 1 0000000000000000 100 0 0 10 0                 \n\0");
 
     NetworkConnection connList[DUMMY_FILE_LINES];
     int connCount = 0;
@@ -155,7 +155,7 @@ void test_connectionsDedup(void) {
 
     TEST_ASSERT_EQUAL_STRING("0.0.0.0",connList[0].localAddress);
     TEST_ASSERT_EQUAL_STRING("5900",connList[0].localPort);
-    TEST_ASSERT_EQUAL_STRING("17.17.17.17",connList[0].remoteAddress);
+    TEST_ASSERT_EQUAL_STRING("127.0.0.1",connList[0].remoteAddress);
     TEST_ASSERT_EQUAL(connList[0].connectionState,LISTEN);
 
      for(int i=0; i< DUMMY_FILE_LINES; i++) {
@@ -200,7 +200,7 @@ void test_uniqueConnections() {
 void test_hexStringToIpString(void) {
     char ipStr[MAX_IP_ADDR_STRING_LENGTH];
     hexAddrToIpStr("6BA44E0A",ipStr,MAX_IP_ADDR_STRING_LENGTH);
-    TEST_ASSERT_EQUAL_STRING("107.164.78.10",ipStr);
+    TEST_ASSERT_EQUAL_STRING("10.78.164.107",ipStr);
  }
 
 void test_hexPortToTcpPort(void) {
@@ -256,7 +256,7 @@ void test_getUDPConnectionsBasic(void) {
        TEST_ASSERT_EQUAL_STRING("0.0.0.0",connections[i].remoteAddress);
        TEST_ASSERT_EQUAL_STRING("0",connections[i].remotePort);
 
-       if(strcmp("53.166.78.10",connections[i].localAddress) == 0) {
+       if(strcmp("10.78.166.53",connections[i].localAddress) == 0) {
            if(strcmp("45775",connections[i].localPort) == 0) {
                found = true;
            }
