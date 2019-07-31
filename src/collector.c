@@ -364,8 +364,11 @@ void generateMetricsReport(char *reportBuffer, const int reportBufferSize, int *
     metrics.tcpConnectionCount = establishedCount;
     metrics.networkStats = stats;
 
-    //TODO Generate a real report ID
-    struct Header header = {12312312, "1.0"};
+    //generate UNIX timestamp for report ID
+    time_t seconds;
+    seconds = time(NULL);
+
+    struct Header header = {seconds, "1.0"};
 
     struct Report report;
     report.header = header;
