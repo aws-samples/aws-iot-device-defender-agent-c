@@ -36,13 +36,16 @@ void test_parseNetDevOneInterface(void) {
     fileContents[3] = strcpy(fileContents[3],"  eno1: 1 2    0    0    0     0          0    1 3 4    0    0    0     0       0          0\n\0");
 
     NetworkStats stats;
+    stats.bytesInPrev = 1;
+    stats.packetsInPrev = 1;
+    stats.bytesOutPrev = 1;
+    stats.packetsOutPrev = 1;
     parseNetDev(fileContents, DUMMY_FILE_LINES, &stats);
 
-
-    TEST_ASSERT_EQUAL(1,stats.bytesIn);
-    TEST_ASSERT_EQUAL(2,stats.packetsIn);
-    TEST_ASSERT_EQUAL(3,stats.bytesOut);
-    TEST_ASSERT_EQUAL(4,stats.packetsOut);
+    TEST_ASSERT_EQUAL(0,stats.bytesInDelta);
+    TEST_ASSERT_EQUAL(1,stats.packetsInDelta);
+    TEST_ASSERT_EQUAL(2,stats.bytesOutDelta);
+    TEST_ASSERT_EQUAL(3,stats.packetsOutDelta);
 
     for(int r = 0; r < DUMMY_FILE_LINES; r++){
         free(fileContents[r]);
@@ -67,12 +70,16 @@ void test_parseNetDevTwoInterfaces(void) {
     fileContents[4] = strcpy(fileContents[4],"  eno2: 1 2    0    0    0     0          0    1 3 4    0    0    0     0       0          0\n\0");
 
     NetworkStats stats;
+    stats.bytesInPrev = 0;
+    stats.packetsInPrev = 0;
+    stats.bytesOutPrev = 0;
+    stats.packetsOutPrev = 0;
     parseNetDev(fileContents, DUMMY_FILE_LINES, &stats);
 
-    TEST_ASSERT_EQUAL(2,stats.bytesIn);
-    TEST_ASSERT_EQUAL(4,stats.packetsIn);
-    TEST_ASSERT_EQUAL(6,stats.bytesOut);
-    TEST_ASSERT_EQUAL(8,stats.packetsOut);
+    TEST_ASSERT_EQUAL(2,stats.bytesInPrev);
+    TEST_ASSERT_EQUAL(4,stats.packetsInPrev);
+    TEST_ASSERT_EQUAL(6,stats.bytesOutPrev);
+    TEST_ASSERT_EQUAL(8,stats.packetsOutPrev);
 
      for(int r = 0; r < DUMMY_FILE_LINES; r++){
          free(fileContents[r]);
@@ -81,19 +88,72 @@ void test_parseNetDevTwoInterfaces(void) {
     return;
 }
 
+void test_parseNetDevSequential(void) {
+    int DUMMY_FILE_LINES = 4;
+
+    char *fileContents[DUMMY_FILE_LINES];
+    for(int r = 0; r < DUMMY_FILE_LINES; r++){
+        fileContents[r] = malloc(1000);
+    }
+
+    fileContents[0] = strcpy(fileContents[0],"Inter-|   Receive                                                |  Transmit\n\0");
+    fileContents[1] = strcpy(fileContents[1]," face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n\0");
+    fileContents[2] = strcpy(fileContents[2],"    lo: 128579792  492217    0    0    0     0          0         0 128579792  492217    0    0    0     0       0          0\n\0");
+    fileContents[3] = strcpy(fileContents[3],"  eno1: 1 2    0    0    0     0          0    1 3 4    0    0    0     0       0          0\n\0");
+
+    NetworkStats stats;
+    stats.bytesInPrev = 0;
+    stats.packetsInPrev = 0;
+    stats.bytesOutPrev = 0;
+    stats.packetsOutPrev = 0;
+    parseNetDev(fileContents, DUMMY_FILE_LINES, &stats);
+
+    for(int r = 0; r < DUMMY_FILE_LINES; r++){
+        free(fileContents[r]);
+    }
+
+    // second file
+    DUMMY_FILE_LINES = 5;
+
+    char *fileContents2[DUMMY_FILE_LINES];
+    for(int r = 0; r < DUMMY_FILE_LINES; r++){
+        fileContents2[r] = malloc(1000);
+    }
+
+    fileContents2[0] = strcpy(fileContents2[0],"Inter-|   Receive                                                |  Transmit\n\0");
+    fileContents2[1] = strcpy(fileContents2[1]," face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n\0");
+    fileContents2[2] = strcpy(fileContents2[2],"    lo: 128579792  492217    0    0    0     0          0         0 128579792  492217    0    0    0     0       0          0\n\0");
+    fileContents2[3] = strcpy(fileContents2[3],"  eno1: 1 2    0    0    0     0          0    1 3 4    0    0    0     0       0          0\n\0");
+    fileContents2[4] = strcpy(fileContents2[4],"  eno2: 1 2    0    0    0     0          0    1 3 4    0    0    0     0       0          0\n\0");
+
+    parseNetDev(fileContents2, DUMMY_FILE_LINES, &stats);
+
+    for(int r = 0; r < DUMMY_FILE_LINES; r++){
+        free(fileContents2[r]);
+    }
+
+    TEST_ASSERT_EQUAL(1,stats.bytesInDelta);
+    TEST_ASSERT_EQUAL(2,stats.packetsInDelta);
+    TEST_ASSERT_EQUAL(3,stats.bytesOutDelta);
+    TEST_ASSERT_EQUAL(4,stats.packetsOutDelta);
+
+
+    return;
+}
+
 void test_getNetworkStatsBasic(void) {
     NetworkStats stats;
 
-    stats.bytesOut = 0;
-    stats.bytesIn = 0;
-    stats.packetsOut = 0;
-    stats.packetsIn = 0;
+    stats.bytesOutPrev = 0;
+    stats.bytesInPrev = 0;
+    stats.packetsOutPrev = 0;
+    stats.packetsInPrev = 0;
 
     getNetworkStats("../test/data/proc_dev",&stats);
-    TEST_ASSERT_EQUAL(35977584,stats.bytesIn);
-    TEST_ASSERT_EQUAL(178326,stats.packetsIn);
-    TEST_ASSERT_EQUAL(35977584,stats.bytesOut);
-    TEST_ASSERT_EQUAL(178326,stats.packetsOut);
+    TEST_ASSERT_EQUAL(35977584,stats.bytesInPrev);
+    TEST_ASSERT_EQUAL(178326,stats.packetsInPrev);
+    TEST_ASSERT_EQUAL(35977584,stats.bytesOutPrev);
+    TEST_ASSERT_EQUAL(178326,stats.packetsOutPrev);
 
 
 }
@@ -311,6 +371,7 @@ int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_parseNetDevOneInterface);
     RUN_TEST(test_parseNetDevTwoInterfaces);
+    RUN_TEST(test_parseNetDevSequential);
     RUN_TEST(test_parseTCPConnectionsBasic);
     RUN_TEST(test_connectionsDedup);
     RUN_TEST(test_hexStringToIpString);

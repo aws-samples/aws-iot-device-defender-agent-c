@@ -92,8 +92,8 @@ void printReportToConsole(const struct Report *report) {
 
     NetworkStats s = m.networkStats;
     printf("\tNetwork Stats\n");
-    printf("\t\tBytes in/out: %lu/%lu\n", s.bytesIn, s.bytesOut);
-    printf("\t\tPackets in/out: %lu/%lu\n", s.packetsIn, s.packetsOut);
+    printf("\t\tBytes in/out: %lu/%lu\n", s.bytesInDelta, s.bytesOutDelta);
+    printf("\t\tPackets in/out: %lu/%lu\n", s.packetsInDelta, s.packetsOutDelta);
 
 }
 
@@ -156,10 +156,10 @@ void generateJSONReport(const struct Report *rpt, char *json, int *length, enum 
 
     //Network Stats
     cJSON *stats = cJSON_CreateObject();
-    cJSON_AddNumberToObject(stats, t->BYTES_IN, rpt->metrics.networkStats.bytesIn);
-    cJSON_AddNumberToObject(stats, t->BYTES_OUT, rpt->metrics.networkStats.bytesOut);
-    cJSON_AddNumberToObject(stats, t->PACKETS_IN, rpt->metrics.networkStats.packetsIn);
-    cJSON_AddNumberToObject(stats, t->PACKETS_OUT, rpt->metrics.networkStats.packetsOut);
+    cJSON_AddNumberToObject(stats, t->BYTES_IN, rpt->metrics.networkStats.bytesInDelta);
+    cJSON_AddNumberToObject(stats, t->BYTES_OUT, rpt->metrics.networkStats.bytesOutDelta);
+    cJSON_AddNumberToObject(stats, t->PACKETS_IN, rpt->metrics.networkStats.packetsInDelta);
+    cJSON_AddNumberToObject(stats, t->PACKETS_OUT, rpt->metrics.networkStats.packetsOutDelta);
     cJSON_AddItemToObject(metrics, t->NETWORK_STATS, stats);
 
     //TCP Connections
@@ -296,31 +296,31 @@ void generateCBORReport(const struct Report *rpt, char *cbor, int *length, enum 
     }
 
     //Network Stats
-    if (rpt->metrics.networkStats.packetsOut > 0 || rpt->metrics.networkStats.bytesOut > 0
-        || rpt->metrics.networkStats.packetsIn > 0 || rpt->metrics.networkStats.bytesIn > 0) {
+    if (rpt->metrics.networkStats.packetsOutDelta > 0 || rpt->metrics.networkStats.bytesOutDelta > 0
+        || rpt->metrics.networkStats.packetsInDelta > 0 || rpt->metrics.networkStats.bytesInDelta > 0) {
 
         CborEncoder netStats;
         cbor_encode_text_stringz(&metrics, t->NETWORK_STATS);
         cbor_encoder_create_map(&metrics, &netStats, CborIndefiniteLength);
 
-        if (rpt->metrics.networkStats.bytesIn > 0) {
+        if (rpt->metrics.networkStats.bytesInDelta > 0) {
             cbor_encode_text_stringz(&netStats, t->BYTES_IN);
-            cbor_encode_int(&netStats, rpt->metrics.networkStats.bytesIn);
+            cbor_encode_int(&netStats, rpt->metrics.networkStats.bytesInDelta);
         }
 
-        if (rpt->metrics.networkStats.bytesOut > 0) {
+        if (rpt->metrics.networkStats.bytesOutDelta > 0) {
             cbor_encode_text_stringz(&netStats, t->BYTES_OUT);
-            cbor_encode_int(&netStats, rpt->metrics.networkStats.bytesOut);
+            cbor_encode_int(&netStats, rpt->metrics.networkStats.bytesOutDelta);
         }
 
-        if (rpt->metrics.networkStats.packetsIn > 0) {
+        if (rpt->metrics.networkStats.packetsInDelta > 0) {
             cbor_encode_text_stringz(&netStats, t->PACKETS_IN);
-            cbor_encode_int(&netStats, rpt->metrics.networkStats.packetsIn);
+            cbor_encode_int(&netStats, rpt->metrics.networkStats.packetsInDelta);
         }
 
-        if (rpt->metrics.networkStats.packetsOut > 0) {
+        if (rpt->metrics.networkStats.packetsOutDelta > 0) {
             cbor_encode_text_stringz(&netStats, t->PACKETS_OUT);
-            cbor_encode_int(&netStats, rpt->metrics.networkStats.packetsOut);
+            cbor_encode_int(&netStats, rpt->metrics.networkStats.packetsOutDelta);
         }
 
         cbor_encoder_close_container(&metrics, &netStats);

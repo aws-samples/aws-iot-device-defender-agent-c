@@ -141,9 +141,10 @@ filterTCPConnectionsByState(enum state status, const NetworkConnection allConnec
  * @param [in] reportFormat
  * @param [out] reportBuffer String to hold full report
  * @param [in] reportBufferSize Maximum length of the final report
+ * @param [out] stats Network stats struct
  * @param [in] tagLen Use Long or Short names
  */
-void generateMetricsReport(char *reportBuffer, const int reportBufferSize, int *reportSize, enum tagType tagLen,
+void generateMetricsReport(char *reportBuffer, const int reportBufferSize, int *reportSize, NetworkStats *stats, enum tagType tagLen,
                            enum format reportFormat);
 
 /**
