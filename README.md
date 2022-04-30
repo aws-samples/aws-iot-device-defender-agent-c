@@ -34,6 +34,15 @@ git clone https://github.com/aws-samples/aws-iot-device-defender-agent-c.git
    cd scripts
    ./bootstrap.sh
    ```
+3. This program also uses zlib, a data compression library. To install,
+   ```
+   wget http://www.zlib.net/zlib-1.2.12.tar.gz
+   tar -xvzf zlib-1.2.12.tar.gz
+   cd zlib-1.2.12
+   ./configure --prefix=/usr/local/zlib
+   make install
+   ```
+   or use a package manager.
 
 #### Configure the SDK with your device parameters
 
