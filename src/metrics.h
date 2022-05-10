@@ -46,10 +46,14 @@ enum protocol {
  */
 typedef struct {
     char *interface; /** Network Interface Name */
-    unsigned long bytesIn;
-    unsigned long bytesOut;
-    unsigned long packetsIn;
-    unsigned long packetsOut;
+    unsigned long bytesInPrev;
+    unsigned long bytesOutPrev;
+    unsigned long packetsInPrev;
+    unsigned long packetsOutPrev;
+    unsigned long bytesInDelta;
+    unsigned long bytesOutDelta;
+    unsigned long packetsInDelta;
+    unsigned long packetsOutDelta;
 } NetworkStats;
 
 typedef struct {

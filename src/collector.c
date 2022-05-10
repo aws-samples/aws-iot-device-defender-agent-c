@@ -225,11 +225,15 @@ void parseNetDev(char **fileContents, int fileLines, NetworkStats *stats) {
         }
     }
 
-    (*stats).bytesIn = bytesIn;
-    (*stats).bytesOut = bytesOut;
-    (*stats).packetsIn = packetsIn;
-    (*stats).packetsOut = packetsOut;
+    stats->bytesInDelta = bytesIn - stats->bytesInPrev;
+    stats->bytesOutDelta = bytesOut - stats->bytesOutPrev;
+    stats->packetsInDelta = packetsIn - stats->packetsInPrev;
+    stats->packetsOutDelta = packetsOut - stats->packetsOutPrev;
 
+    stats->bytesInPrev = bytesIn;
+    stats->bytesOutPrev = bytesOut;
+    stats->packetsInPrev = packetsIn;
+    stats->packetsOutPrev = packetsOut;
     return;
 }
 
@@ -326,13 +330,12 @@ filterTCPConnectionsByState(enum state status, const NetworkConnection allConnec
 }
 
 
-void generateMetricsReport(char *reportBuffer, const int reportBufferSize, int *reportSize, enum tagType tagLen,
+void generateMetricsReport(char *reportBuffer, const int reportBufferSize, int *reportSize, NetworkStats *stats, enum tagType tagLen,
                            enum format reportFormat) {
 
     printf("Using file: %s\n", PROC_NET_DEV);
 
-    NetworkStats stats;
-    getNetworkStats(PROC_NET_DEV, &stats);
+    getNetworkStats(PROC_NET_DEV, stats);
 
     NetworkConnection tcpConnections[MAX_CONNECTIONS];
     int tcpConnectionCount = 0;
@@ -362,7 +365,7 @@ void generateMetricsReport(char *reportBuffer, const int reportBufferSize, int *
     metrics.udpPortCount = udpConnectionCount;
     metrics.tcpConnections = establishedConnections;
     metrics.tcpConnectionCount = establishedCount;
-    metrics.networkStats = stats;
+    metrics.networkStats = *stats;
 
     //generate UNIX timestamp for report ID
     time_t seconds;

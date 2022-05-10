@@ -234,31 +234,46 @@ int main(int argc, char *argv[]) {
     }
 
     char report[MAX_MESSAGE_SIZE_BYTES];
+
+    NetworkStats stats;
+    stats.bytesInPrev = 0;
+    stats.bytesOutPrev = 0;
+    stats.packetsInPrev = 0;
+    stats.packetsOutPrev = 0;
     while ((NETWORK_ATTEMPTING_RECONNECT == rc || NETWORK_RECONNECTED == rc || SUCCESS == rc)
            && (publishCount > 0 || infinitePublishFlag)) {
 
-        if(!DISABLE_JOBS) {
+        if (!DISABLE_JOBS) {
             checkForNewJobs(&client);
         }
         //Max time the yield function will wait for read messages
         rc = aws_iot_mqtt_yield(&client, 1000);
         if (NETWORK_ATTEMPTING_RECONNECT == rc) {
             // If the client is attempting to reconnect we will skip the rest of the loop.
-            printf("Network reconnecting, skipping loop");
+            IOT_INFO("Network reconnecting, skipping loop");
             continue;
         }
+
+        bool hasNetworkStats = stats.bytesInPrev + stats.bytesOutPrev + stats.packetsInPrev + stats.packetsOutPrev > 0;
 
         report[0] = '\0';
         int reportLength = -1;
         if (REPORT_FORMAT == CBOR) {
-            generateMetricsReport(report, MAX_MESSAGE_SIZE_BYTES, &reportLength, TAG_LENGTH, CBOR);
+            generateMetricsReport(report, MAX_MESSAGE_SIZE_BYTES, &reportLength, &stats, TAG_LENGTH, CBOR);
         } else {
-            generateMetricsReport(report, MAX_MESSAGE_SIZE_BYTES, &reportLength, TAG_LENGTH, JSON);
+            generateMetricsReport(report, MAX_MESSAGE_SIZE_BYTES, &reportLength, &stats, TAG_LENGTH, JSON);
         }
 
         memcpy(cPayload, report, reportLength);
         paramsQOS0.payloadLen = reportLength;
-        rc = aws_iot_mqtt_publish(&client, publishTopic, strlen(publishTopic), &paramsQOS0);
+
+        if (hasNetworkStats) {
+            rc = aws_iot_mqtt_publish(&client, publishTopic, strlen(publishTopic), &paramsQOS0);
+        }
+        else {
+            IOT_INFO("No previous network metrics detected, attempting to publish on next interval");
+        }
+
         IOT_INFO("sleep for %i seconds", PUBLISH_INTERVAL);
         sleep(PUBLISH_INTERVAL);
 
@@ -270,7 +285,7 @@ int main(int argc, char *argv[]) {
         IOT_INFO("Publish done\n");
     }
 
-    if(!DISABLE_JOBS) {
+    if (!DISABLE_JOBS) {
         cleanUpJobSubscriptions(&client);
     }
 

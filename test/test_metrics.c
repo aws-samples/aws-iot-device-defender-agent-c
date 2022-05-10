@@ -61,7 +61,8 @@ void test_JSONMetricsBasicStructure_LongTags() {
 
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, LONG_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, LONG_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -100,7 +101,8 @@ void test_JSONMetricsBasicStructure_ShortTags() {
 
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, SHORT_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, SHORT_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -139,7 +141,8 @@ void test_tcpPortsListJSON_LongTags(void) {
 
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, LONG_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, LONG_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -163,7 +166,8 @@ void test_tcpPortsListJSON_ShortTags(void) {
 
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, SHORT_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, SHORT_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -187,7 +191,8 @@ void test_udpPortsListJSON_LongTags(void) {
 
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, LONG_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, LONG_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -211,7 +216,8 @@ void test_udpPortsListJSON_ShortTags(void) {
 
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, SHORT_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, SHORT_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -234,7 +240,12 @@ void test_udpPortsListJSON_ShortTags(void) {
 void test_netstatsJSON_LongTags(void) {
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, LONG_NAMES, JSON);
+    NetworkStats stats;
+    stats.bytesInPrev = 1;
+    stats.packetsInPrev = 1;
+    stats.bytesOutPrev = 1;
+    stats.packetsOutPrev = 1;
+    generateMetricsReport(reportString, 128000, &length, &stats, LONG_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -256,7 +267,12 @@ void test_netstatsJSON_LongTags(void) {
 void test_netstatsJSON_ShortTags(void) {
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, SHORT_NAMES, JSON);
+    NetworkStats stats;
+    stats.bytesInPrev = 1;
+    stats.packetsInPrev = 1;
+    stats.bytesOutPrev = 1;
+    stats.packetsOutPrev = 1;
+    generateMetricsReport(reportString, 128000, &length, &stats, SHORT_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -279,7 +295,8 @@ void test_netstatsJSON_ShortTags(void) {
 void test_tcpConnectionsJSON_LongTags(void) {
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, LONG_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, LONG_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -303,7 +320,8 @@ void test_tcpConnectionsJSON_LongTags(void) {
 void test_tcpConnectionsJSON_ShortTags(void) {
     char reportString[128000];
     int length = -1;
-    generateMetricsReport(reportString, 128000, &length, SHORT_NAMES, JSON);
+    NetworkStats stats;
+    generateMetricsReport(reportString, 128000, &length, &stats, SHORT_NAMES, JSON);
 
     //Basic Structure
     cJSON *report = cJSON_Parse(reportString);
@@ -327,7 +345,8 @@ void test_tcpConnectionsJSON_ShortTags(void) {
 void test_reportCBOR_BasicStructure_LongTags(void) {
     uint8_t reportBuffer[512000];
     int length = -1;
-    generateMetricsReport(reportBuffer, 512000, &length, LONG_NAMES, CBOR);
+    NetworkStats stats;
+    generateMetricsReport(reportBuffer, 512000, &length, &stats, LONG_NAMES, CBOR);
 
     TEST_ASSERT_GREATER_OR_EQUAL(1,strlen(reportBuffer));
     TEST_ASSERT_GREATER_OR_EQUAL(1,length);
@@ -363,7 +382,8 @@ void test_reportCBOR_BasicStructure_LongTags(void) {
 void test_reportCBOR_header_LongTags(void) {
     uint8_t reportBuffer[512000];
     int length = -1;
-    generateMetricsReport(reportBuffer, 512000, &length, LONG_NAMES, CBOR);
+    NetworkStats stats;
+    generateMetricsReport(reportBuffer, 512000, &length, &stats, LONG_NAMES, CBOR);
 
     TEST_ASSERT_GREATER_OR_EQUAL(1,strlen(reportBuffer));
     TEST_ASSERT_GREATER_OR_EQUAL(1,length);
@@ -411,7 +431,8 @@ void test_reportCBOR_header_LongTags(void) {
 void test_reportCBOR_metrics_LongTags(void) {
     uint8_t reportBuffer[512000];
     int length = -1;
-    generateMetricsReport(reportBuffer, 512000, &length, LONG_NAMES, CBOR);
+    NetworkStats stats;
+    generateMetricsReport(reportBuffer, 512000, &length, &stats, LONG_NAMES, CBOR);
 
     TEST_ASSERT_GREATER_OR_EQUAL(1,strlen(reportBuffer));
     TEST_ASSERT_GREATER_OR_EQUAL(1,length);
